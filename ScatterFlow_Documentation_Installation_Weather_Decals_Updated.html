@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ScatterFlow Documentation</title>
+
+    <style>
+
+        /* --- Premium Dark Theme Variables --- */
+
+        :root {
+
+            --bg-base: #09090b; 
+
+            --bg-sidebar: #0f0f11;
+
+            --bg-surface: #121214; 
+
+            --bg-surface-elevated: #1a1a1e;
+
+            --border-subtle: rgba(255, 255, 255, 0.08);
+
+            --border-highlight: rgba(255, 255, 255, 0.15);
+
+            --text-main: #ededed;
+
+            --text-muted: #a1a1aa;
+
+            --text-faint: #71717a;
+
+            --accent: #ffffff;
+
+            --brand-blue: #3b82f6;
+
+            --brand-blue-bg: rgba(59, 130, 246, 0.1);
+
+            --glow: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 50%);
+
+            --sidebar-width: 260px;
+
+        }
+
+
+
+        * {
+
+            box-sizing: border-box;
+
+            margin: 0;
+
+            padding: 0;
+
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+        }
+
+
+
+        body {
+
+            background-color: var(--bg-base);
+
+            color: var(--text-main);
+
+            line-height: 1.6;
+
+            background-image: var(--glow);
+
+            background-repeat: no-repeat;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            overflow-x: hidden;
+
+        }
+
+
+
+        /* --- Sidebar Navigation --- */
+
+        .sidebar {
+
+            width: var(--sidebar-width);
+
+            background-color: var(--bg-sidebar);
+
+            height: 100vh;
+
+            position: fixed;
+
+            border-right: 1px solid var(--border-subtle);
+
+            padding: 2rem 1.5rem;
+
+            display: flex;
+
+            flex-direction: column;
+
+            z-index: 100;
+
+        }
+
+
+
+        .sidebar h2 {
+
+            font-size: 1.2rem;
+
+            color: var(--accent);
+
+            margin-bottom: 2rem;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 0.5rem;
+
+        }
+
+
+
+        .nav-link {
+
+            color: var(--text-muted);
+
+            text-decoration: none;
+
+            padding: 0.6rem 0.8rem;
+
+            border-radius: 6px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 0.75rem;
+
+            margin-bottom: 0.5rem;
+
+            transition: all 0.2s;
+
+            cursor: pointer;
+
+            font-size: 0.95rem;
+
+        }
+
+
+
+        .nav-link:hover {
+
+            background-color: var(--bg-surface-elevated);
+
+            color: var(--accent);
+
+        }
+
+
+
+        .nav-link.active {
+
+            background-color: var(--bg-surface-elevated);
+
+            color: var(--accent);
+
+            border-left: 2px solid var(--accent);
+
+        }
+
+
+
+        /* --- Main Content Container --- */
+
+        .main-content {
+
+            margin-left: var(--sidebar-width);
+
+            width: calc(100% - var(--sidebar-width));
+
+            padding: 4rem;
+
+            min-height: 100vh;
+
+        }
+
+
+
+        /* --- Page Routing Logic --- */
+
+        .page { display: none; animation: fadeIn 0.4s ease-out forwards; }
+
+        .page.active { display: block; }
+
+
+
+        @keyframes fadeIn {
+
+            from { opacity: 0; transform: translateY(10px); }
+
+            to { opacity: 1; transform: translateY(0); }
+
+        }
+
+
+
+        /* --- Dashboard Styles (Home) --- */
+
+        .hero { text-align: left; margin-bottom: 4rem; max-width: 800px; }
+
+        .hero h1 { font-size: 3rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; letter-spacing: -0.03em;}
+
+        .hero p { color: var(--text-muted); font-size: 1.1rem; }
+
+
+
+        .tile-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+            gap: 1.5rem;
+
+            max-width: 1200px;
+
+        }
+
+
+
+        .tile {
+
+            background-color: var(--bg-surface);
+
+            border: 1px solid var(--border-subtle);
+
+            border-radius: 16px;
+
+            overflow: hidden;
+
+            text-decoration: none;
+
+            color: inherit;
+
+            display: flex;
+
+            flex-direction: column;
+
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+            cursor: pointer;
+
+        }
+
+
+
+        .tile:hover {
+
+            transform: translateY(-4px);
+
+            border-color: var(--border-highlight);
+
+            background-color: var(--bg-surface-elevated);
+
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+
+        }
+
+
+
+        .tile-visual {
+
+            width: 100%; aspect-ratio: 16/9; background-color: #1a1a1d;
+
+            border-bottom: 1px solid var(--border-subtle);
+
+            display: flex; align-items: center; justify-content: center;
+
+        }
+
+        .tile-icon { font-size: 2.5rem; opacity: 0.5; transition: opacity 0.3s ease; }
+
+        .tile:hover .tile-icon { opacity: 1; }
+
+
+
+        .tile-content { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
+
+        .tile-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+
+        .tile-title { font-size: 1.25rem; font-weight: 600; color: var(--accent); }
+
+        .tile-arrow { color: var(--text-muted); transition: transform 0.3s; }
+
+        .tile:hover .tile-arrow { transform: translateX(4px); color: var(--accent); }
+
+        .tile-desc { font-size: 0.95rem; color: var(--text-muted); }
+
+
+
+        /* --- Inner Page Styles --- */
+
+        .breadcrumbs { color: var(--text-faint); font-size: 0.9rem; margin-bottom: 1.5rem; display: flex; gap: 0.5rem; }
+
+        .breadcrumbs a { color: var(--text-muted); text-decoration: none; cursor: pointer;}
+
+        .breadcrumbs a:hover { color: var(--accent); }
+
+        
+
+        .page-header h1 { font-size: 3rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; }
+
+        .page-header p { font-size: 1.1rem; color: var(--text-muted); max-width: 800px; margin-bottom: 3rem; }
+
+
+
+        .overview-video-container {
+
+            background-color: var(--bg-surface); border: 1px solid var(--border-subtle);
+
+            border-radius: 16px; aspect-ratio: 16/9; width: 100%; max-width: 1200px;
+
+            display: flex; align-items: center; justify-content: center; margin-bottom: 4rem;
+
+            position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
+            overflow: hidden;
+
+        }
+
+        .play-button {
+
+            width: 64px; height: 64px; background-color: rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px);
+
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center;
+
+            justify-content: center; font-size: 1.5rem; cursor: pointer; transition: transform 0.2s; z-index: 2;
+
+        }
+
+        .overview-video-container:hover .play-button { transform: scale(1.1); }
+
+        .video-label { position: absolute; color: var(--text-faint); font-size: 0.9rem; bottom: 1.5rem; }
+
+
+
+        .section-title { font-size: 1.8rem; font-weight: 600; color: var(--accent); margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); max-width: 1200px;}
+
+        
+
+        .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; max-width: 1200px;}
+
+        
+
+        .setting-card {
+
+            background-color: var(--bg-surface); border: 1px solid var(--border-subtle);
+
+            border-radius: 12px; padding: 1.5rem; transition: border-color 0.2s;
+
+            display: flex; flex-direction: column;
+
+        }
+
+        .setting-card:hover { border-color: var(--border-highlight); }
+
+        
+
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+
+        .card-header-left { display: flex; align-items: center; gap: 0.75rem; }
+
+        .card-icon { background-color: var(--bg-surface-elevated); width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-subtle); }
+
+        .card-title { font-size: 1.2rem; font-weight: 600; color: var(--accent); }
+
+
+
+        .timestamp-badge {
+
+            background-color: var(--brand-blue-bg); color: var(--brand-blue);
+
+            border: 1px solid rgba(59, 130, 246, 0.2); padding: 0.3rem 0.6rem;
+
+            border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+
+            display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;
+
+        }
+
+        .timestamp-badge:hover { background-color: rgba(59, 130, 246, 0.2); transform: scale(1.05); }
+
+
+
+        .card-overview {
+
+            font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;
+
+        }
+
+
+
+        /* --- Demos Grid --- */
+
+        .demos-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+
+            gap: 2rem;
+
+            max-width: 1200px;
+
+        }
+
+        .demo-video-card {
+
+            display: flex; flex-direction: column; gap: 1rem;
+
+        }
+
+        .demo-video-wrapper {
+
+            background-color: var(--bg-surface); border: 1px solid var(--border-subtle);
+
+            border-radius: 12px; aspect-ratio: 16/9; display: flex; align-items: center;
+
+            justify-content: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+            overflow: hidden; cursor: pointer;
+
+        }
+
+        .demo-video-wrapper:hover .play-button { transform: scale(1.1); }
+
+        .demo-title { font-size: 1.1rem; font-weight: 600; color: var(--accent); }
+
+        .demo-desc { font-size: 0.9rem; color: var(--text-muted); }
+
+
+
+        /* Responsive */
+
+        @media (max-width: 1024px) {
+
+            .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+
+            .main-content { margin-left: 0; width: 100%; padding: 2rem; }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .demos-grid { grid-template-columns: 1fr; }
+
+        }
+
+
+        /* --- Video chapter cards --- */
+        .scatter-overview {
+            display: block;
+            background: #000;
+        }
+
+        .scatter-video-embed {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .chapter-card {
+            min-height: 150px;
+            justify-content: space-between;
+        }
+
+        .chapter-card .card-header {
+            margin-bottom: 1.25rem;
+        }
+
+        .scatter-chapter-grid {
+            margin-bottom: 1rem;
+        }
+
+        .section-jump {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-highlight);
+            border-radius: 8px;
+            background: var(--bg-surface-elevated);
+            color: var(--text-main);
+            font: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s, border-color 0.2s;
+        }
+
+        .section-jump:hover {
+            transform: translateY(-2px);
+            background: var(--brand-blue-bg);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .section-jump:focus-visible {
+            outline: 2px solid var(--brand-blue);
+            outline-offset: 3px;
+        }
+
+
+
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <!-- SIDEBAR -->
+
+    <nav class="sidebar">
+
+        <h2>📦 ScatterFlow Docs</h2>
+
+        <a class="nav-link active" onclick="navigateTo('home')">🏠 Dashboard Hub</a>
+
+        <a class="nav-link" onclick="navigateTo('installation')">📥 Installation</a>
+
+        <div style="height: 1px; background: var(--border-subtle); margin: 1rem 0;"></div>
+
+        <a class="nav-link" onclick="navigateTo('scatter')">🌳 Scatter Module</a>
+
+        <a class="nav-link" onclick="navigateTo('weather')">🌩️ Weather Module</a>
+
+        <a class="nav-link" onclick="navigateTo('water')">💧 Water Module</a>
+
+        <a class="nav-link" onclick="navigateTo('ivy')">🌿 Ivy Module</a>
+
+        <a class="nav-link" onclick="navigateTo('decals')">🏷️ Decals Module</a>
+
+        <a class="nav-link" onclick="navigateTo('physics')">🧱 Physics Scatter</a>
+
+        <div style="height: 1px; background: var(--border-subtle); margin: 1rem 0;"></div>
+
+        <a class="nav-link" onclick="navigateTo('demos')">🎬 Demos / Showcase</a>
+
+    </nav>
+
+
+
+    <!-- MAIN CONTENT AREA -->
+
+    <main class="main-content">
+
+
+
+        <!-- ==========================================
+
+             PAGE 0: DASHBOARD / HUB
+
+        =========================================== -->
+
+        <div id="home" class="page active">
+
+            <header class="hero">
+
+                <h1>Documentation Hub</h1>
+
+                <p>Welcome to ScatterFlow. Select a module below to access settings overviews, installation guides, and video showcases.</p>
+
+            </header>
+
+
+
+            <div class="tile-grid">
+
+                <div class="tile" onclick="navigateTo('installation')"><div class="tile-visual"><span class="tile-icon">📥</span></div><div class="tile-content"><div class="tile-header"><span class="tile-title">Installation</span><span class="tile-arrow">→</span></div><p class="tile-desc">How to install, update, and setup your add-on preferences.</p></div></div>
+
+                <div class="tile" onclick="navigateTo('scatter')"><div class="tile-visual"><span class="tile-icon">🌳</span></div><div class="tile-content"><div class="tile-header"><span class="tile-title">Scatter</span><span class="tile-arrow">→</span></div><p class="tile-desc">High-density procedural instancing and optimization tools.</p></div></div>
+
+                <div class="tile" onclick="navigateTo('weather')"><div class="tile-visual"><span class="tile-icon">🌩️</span></div><div class="tile-content"><div class="tile-header"><span class="tile-title">Weather</span><span class="tile-arrow">→</span></div><p class="tile-desc">Volumetric fog, rain, snow, and dynamic wind systems.</p></div></div>
+
+                <div class="tile" onclick="navigateTo('water')"><div class="tile-visual"><span class="tile-icon">💧</span></div><div class="tile-content"><div class="tile-header"><span class="tile-title">Water</span><span class="tile-arrow">→</span></div><p class="tile-desc">Oceans, lakes, and procedural intersection foam.</p></div></div>
+
+                <div class="tile" onclick="navigateTo('ivy')"><div class="tile-visual"><span class="tile-icon">🌿</span></div><div class="tile-content"><div class="tile-header"><span class="tile-title">Ivy</span><span class="tile-arrow">→</span></div><p class="tile-desc">Draw procedural vines that wrap around your geometry.</p></div></div>
+
+                <div class="tile" onclick="navigateTo('decals')"><div class="tile-visual"><span class="tile-icon">🏷️</span></div><div class="tile-content"><div class="tile-header"><span class="tile-title">Decals</span><span class="tile-arrow">→</span></div><p class="tile-desc">Project dirt, damage, and signs without UV unwrapping.</p></div></div>
+
+                <div class="tile" onclick="navigateTo('physics')"><div class="tile-visual"><span class="tile-icon">🧱</span></div><div class="tile-content"><div class="tile-header"><span class="tile-title">Physics Scatter</span><span class="tile-arrow">→</span></div><p class="tile-desc">Drop rigid bodies and bake them into natural resting piles.</p></div></div>
+
+                <div class="tile" onclick="navigateTo('demos')"><div class="tile-visual"><span class="tile-icon">🎬</span></div><div class="tile-content"><div class="tile-header"><span class="tile-title">Demos</span><span class="tile-arrow">→</span></div><p class="tile-desc">A collection of showcases and real-time scene creation.</p></div></div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==========================================
+
+             PAGE 1: INSTALLATION
+
+        =========================================== -->
+
+        <div id="installation" class="page">
+
+            <div class="breadcrumbs">
+
+                <a onclick="navigateTo('home')">Dashboard</a> <span>/</span> <span style="color: var(--text-main);">Installation</span>
+
+            </div>
+
+            <header class="page-header">
+
+                <h1>Installation & Setup</h1>
+
+                <p>Follow these quick steps to get ScatterFlow installed and running in your Blender environment.</p>
+
+            </header>
+
+
+
+            <div class="overview-video-container scatter-overview">
+                <iframe
+                    class="scatter-video-embed"
+                    src="https://www.youtube.com/embed/PMtaSFBMHgM?si=Jh0Bgvf7xIfOJMf9&amp;rel=0"
+                    title="ScatterFlow Installation tutorial"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+
+
+            <h2 class="section-title">Setup Steps</h2>
+
+            <div class="settings-grid">
+
+                <article class="setting-card">
+
+                    <div class="card-header">
+
+                        <div class="card-header-left"><div class="card-icon">1️⃣</div><h3 class="card-title">Download</h3></div>
+
+                    </div>
+
+                    <p class="card-overview">Download the latest `.zip` release file from your purchase platform. <strong>Do not extract the zip file.</strong> Blender will handle the extraction process automatically during installation.</p>
+
+                </article>
+
+                
+
+                <article class="setting-card">
+
+                    <div class="card-header">
+
+                        <div class="card-header-left"><div class="card-icon">2️⃣</div><h3 class="card-title">Install</h3></div>
+
+                    </div>
+
+                    <p class="card-overview">Open Blender and navigate to <strong>Edit > Preferences > Add-ons</strong>. Click the "Install..." button at the top right, locate your downloaded `.zip` file, and select it.</p>
+
+                </article>
+
+
+
+                <article class="setting-card">
+
+                    <div class="card-header">
+
+                        <div class="card-header-left"><div class="card-icon">3️⃣</div><h3 class="card-title">Activate</h3></div>
+
+                    </div>
+
+                    <p class="card-overview">Once installed, check the empty box next to "ScatterFlow" in the add-ons list to enable it. You can now access the add-on panels from the 3D Viewport N-Panel.</p>
+
+                </article>
+
+            </div>
+
+        </div>
+
+
+
+        
+        
+        
+        
+                <!-- ==========================================
+             PAGE 2: SCATTER MODULE
+        =========================================== -->
+        <div id="scatter" class="page">
+            <div class="breadcrumbs">
+                <a onclick="navigateTo('home')">Dashboard</a> <span>/</span> <span style="color: var(--text-main);">Scatter</span>
+            </div>
+
+            <header class="page-header">
+                <h1>ScatterFlow Scatter</h1>
+                <p>Use the video chapters below to jump straight to the setting you need.</p>
+            </header>
+
+            <div class="overview-video-container scatter-overview">
+                <iframe
+                    id="scatterOverviewVideo"
+                    class="scatter-video-embed"
+                    src="https://www.youtube.com/embed/5htpZLDZMf8?si=7dDB647-0XpOlDsl&amp;enablejsapi=1&amp;rel=0"
+                    title="ScatterFlow Scatter overview"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="settings-grid scatter-chapter-grid">
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">📥</div><h3 class="card-title">Installation</h3></div>
+                            <span class="timestamp-badge">⏱ 0:00–0:42</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(0)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">🧰</div><h3 class="card-title">Randomize Transform &amp; Snap to Ground</h3></div>
+                            <span class="timestamp-badge">⏱ 0:43–1:08</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(43)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">▶</div><h3 class="card-title">Getting Started</h3></div>
+                            <span class="timestamp-badge">⏱ 1:09–1:55</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(69)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">☷</div><h3 class="card-title">System List Panel</h3></div>
+                            <span class="timestamp-badge">⏱ 1:56–2:13</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(116)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">⬒</div><h3 class="card-title">Surface Tab</h3></div>
+                            <span class="timestamp-badge">⏱ 2:14–2:31</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(134)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">⠿</div><h3 class="card-title">Scattering Tab</h3></div>
+                            <span class="timestamp-badge">⏱ 2:32–3:14</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(152)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">↗</div><h3 class="card-title">Scale Tab</h3></div>
+                            <span class="timestamp-badge">⏱ 3:15–3:38</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(195)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">⟲</div><h3 class="card-title">Rotation Tab</h3></div>
+                            <span class="timestamp-badge">⏱ 3:39–3:54</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(219)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">✦</div><h3 class="card-title">Culling Tab</h3></div>
+                            <span class="timestamp-badge">⏱ 3:55–4:42</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(235)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">⛰️</div><h3 class="card-title">Abiotic Tab</h3></div>
+                            <span class="timestamp-badge">⏱ 4:43–5:25</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(283)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">◌</div><h3 class="card-title">Proximity Tab</h3></div>
+                            <span class="timestamp-badge">⏱ 5:26–6:05</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(326)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">↔</div><h3 class="card-title">Ecosystem Tab</h3></div>
+                            <span class="timestamp-badge">⏱ 6:06–6:38</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(366)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">▦</div><h3 class="card-title">Texture Masks Tab</h3></div>
+                            <span class="timestamp-badge">⏱ 6:39–7:23</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(399)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">〰</div><h3 class="card-title">Dynamics Tab</h3></div>
+                            <span class="timestamp-badge">⏱ 7:24–8:53</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(444)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">⚡</div><h3 class="card-title">Optimization Tab</h3></div>
+                            <span class="timestamp-badge">⏱ 8:54–9:34</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(534)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">⇅</div><h3 class="card-title">Groups</h3></div>
+                            <span class="timestamp-badge">⏱ 9:35–10:19</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(575)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">🌿</div><h3 class="card-title">Biomes</h3></div>
+                            <span class="timestamp-badge">⏱ 10:20–11:29</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(620)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+
+                    <article class="setting-card chapter-card">
+                        <div class="card-header">
+                            <div class="card-header-left"><div class="card-icon">✋</div><h3 class="card-title">Manual Mode</h3></div>
+                            <span class="timestamp-badge">⏱ 11:30–13:32</span>
+                        </div>
+                        <button class="section-jump" type="button" onclick="seekScatterVideo(690)">Go to section <span aria-hidden="true">→</span></button>
+                    </article>
+            </div>
+        </div>
+
+        <!-- Remaining Module Pages... -->
+
+
+
+
+
+
+
+<div id="weather" class="page">
+            <div class="breadcrumbs">
+                <a onclick="navigateTo('home')">Dashboard</a> <span>/</span> <span style="color: var(--text-main);">Weather</span>
+            </div>
+            <header class="page-header">
+                <h1>Weather Settings</h1>
+                <p>Documentation coming soon.</p>
+            </header>
+        </div>
+
+        <!-- ==========================================
+             PAGE: WATER MODULE
+        =========================================== -->
+        <div id="water" class="page">
+            <div class="breadcrumbs">
+                <a onclick="navigateTo('home')">Dashboard</a> <span>/</span> <span style="color: var(--text-main);">Water</span>
+            </div>
+
+            <header class="page-header">
+                <h1>ScatterFlow Water</h1>
+                <p>Use the video chapters below to jump straight to the Water setting you need.</p>
+            </header>
+
+            <div class="overview-video-container scatter-overview">
+                <iframe
+                    id="waterOverviewVideo"
+                    class="scatter-video-embed"
+                    src="https://www.youtube.com/embed/1x2KFgH1viY?si=mVFtAGLiQRo3boYG&amp;enablejsapi=1&amp;rel=0"
+                    title="ScatterFlow Water tutorial"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="settings-grid scatter-chapter-grid">
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">▶</div><h3 class="card-title">Getting Started</h3></div>
+                        <span class="timestamp-badge">⏱ 0:00–0:45</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekWaterVideo(0)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">🛟</div><h3 class="card-title">Floating Objects</h3></div>
+                        <span class="timestamp-badge">⏱ 0:46–1:22</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekWaterVideo(46)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">〰️</div><h3 class="card-title">Water Ripples</h3></div>
+                        <span class="timestamp-badge">⏱ 1:23–1:48</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekWaterVideo(83)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">🪵</div><h3 class="card-title">Water Debris</h3></div>
+                        <span class="timestamp-badge">⏱ 1:49–2:33</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekWaterVideo(109)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             PAGE: IVY MODULE
+        =========================================== -->
+        <div id="ivy" class="page">
+            <div class="breadcrumbs">
+                <a onclick="navigateTo('home')">Dashboard</a> <span>/</span> <span style="color: var(--text-main);">Ivy</span>
+            </div>
+
+            <header class="page-header">
+                <h1>ScatterFlow Ivy</h1>
+                <p>Use the video chapters below to jump straight to the Ivy setting you need.</p>
+            </header>
+
+            <div class="overview-video-container scatter-overview">
+                <iframe
+                    id="ivyOverviewVideo"
+                    class="scatter-video-embed"
+                    src="https://www.youtube.com/embed/F-ukg3vFYho?si=UtQHrgG3_lSJNDGn&amp;enablejsapi=1&amp;rel=0"
+                    title="ScatterFlow Ivy tutorial"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="settings-grid scatter-chapter-grid">
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">▶</div><h3 class="card-title">Getting Started</h3></div>
+                        <span class="timestamp-badge">⏱ 0:00–1:07</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekIvyVideo(0)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">🌿</div><h3 class="card-title">Ivy Modes</h3></div>
+                        <span class="timestamp-badge">⏱ 1:11–1:35</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekIvyVideo(71)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">🎨</div><h3 class="card-title">Customizing Ivy</h3></div>
+                        <span class="timestamp-badge">⏱ 1:36–2:03</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekIvyVideo(96)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">⚙️</div><h3 class="card-title">Ivy Properties</h3></div>
+                        <span class="timestamp-badge">⏱ 2:04–3:17</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekIvyVideo(124)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+            </div>
+        </div>
+
+        <div id="decals" class="page">
+            <div class="breadcrumbs">
+                <a onclick="navigateTo('home')">Dashboard</a> <span>/</span> <span style="color: var(--text-main);">Decals</span>
+            </div>
+            <header class="page-header">
+                <h1>Decal Settings</h1>
+                <p>Documentation coming soon.</p>
+            </header>
+        </div>
+
+        <!-- ==========================================
+             PAGE: PHYSICS SCATTER MODULE
+        =========================================== -->
+        <div id="physics" class="page">
+            <div class="breadcrumbs">
+                <a onclick="navigateTo('home')">Dashboard</a> <span>/</span> <span style="color: var(--text-main);">Physics Scatter</span>
+            </div>
+
+            <header class="page-header">
+                <h1>ScatterFlow Physics Scatter</h1>
+                <p>Use the video chapters below to jump straight to the Physics Scatter setting you need.</p>
+            </header>
+
+            <div class="overview-video-container scatter-overview">
+                <iframe
+                    id="physicsOverviewVideo"
+                    class="scatter-video-embed"
+                    src="https://www.youtube.com/embed/O6uCq5fN8SE?si=bpyZs-03xBsPUgCq&amp;enablejsapi=1&amp;rel=0"
+                    title="ScatterFlow Physics Scatter tutorial"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="settings-grid scatter-chapter-grid">
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">▶</div><h3 class="card-title">Getting Started</h3></div>
+                        <span class="timestamp-badge">⏱ 0:00–0:32</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekPhysicsVideo(0)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">📦</div><h3 class="card-title">Source Collections</h3></div>
+                        <span class="timestamp-badge">⏱ 0:33–0:58</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekPhysicsVideo(33)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">⚡</div><h3 class="card-title">Quick Physics</h3></div>
+                        <span class="timestamp-badge">⏱ 0:59–1:33</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekPhysicsVideo(59)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">🧱</div><h3 class="card-title">Scattering Modes</h3></div>
+                        <span class="timestamp-badge">⏱ 1:34–2:37</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekPhysicsVideo(94)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">⚙️</div><h3 class="card-title">Advanced Settings</h3></div>
+                        <span class="timestamp-badge">⏱ 2:38–3:29</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekPhysicsVideo(158)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+            </div>
+        </div>
+
+
+
+        <!-- ==========================================
+
+             PAGE: DEMOS / SHOWCASE
+
+        =========================================== -->
+
+        <div id="demos" class="page">
+
+            <div class="breadcrumbs">
+
+                <a onclick="navigateTo('home')">Dashboard</a> <span>/</span> <span style="color: var(--text-main);">Demos</span>
+
+            </div>
+
+            <header class="page-header">
+
+                <h1>Demos & Showcase</h1>
+
+                <p>See ScatterFlow in action. Watch real-time workflow examples, cinematic showcases, and environment builds.</p>
+
+            </header>
+
+
+
+            <div class="demos-grid">
+
+                <!-- Demo 1 -->
+
+                <div class="demo-video-card">
+
+                    <div class="demo-video-wrapper">
+
+                        <div class="play-button">▶</div>
+
+                        <span class="video-label">[ 🎬 Forest Build Timelapse ]</span>
+
+                    </div>
+
+                    <div class="demo-text">
+
+                        <div class="demo-title">Building a Forest in 5 Minutes</div>
+
+                        <div class="demo-desc">Watch a complete workflow using the Scatter and Weather modules to create a dense, misty forest from scratch.</div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Demo 2 -->
+
+                <div class="demo-video-card">
+
+                    <div class="demo-video-wrapper">
+
+                        <div class="play-button">▶</div>
+
+                        <span class="video-label">[ 🎬 Physics Rock Pile Demo ]</span>
+
+                    </div>
+
+                    <div class="demo-text">
+
+                        <div class="demo-title">Natural Rock Piles with Physics</div>
+
+                        <div class="demo-desc">Using the physics scatter tool to drop rocks and rubble, baking them into a realistic, rested formation.</div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Demo 3 -->
+
+                <div class="demo-video-card">
+
+                    <div class="demo-video-wrapper">
+
+                        <div class="play-button">▶</div>
+
+                        <span class="video-label">[ 🎬 Overgrown Ruins Showcase ]</span>
+
+                    </div>
+
+                    <div class="demo-text">
+
+                        <div class="demo-title">Overgrown Ruins Showcase</div>
+
+                        <div class="demo-desc">A cinematic look at the Ivy and Decal systems used heavily to age and weather a castle ruin.</div>
+
+                    </div>
+
+                </div>
+
+                
+
+                <!-- Demo 4 -->
+
+                <div class="demo-video-card">
+
+                    <div class="demo-video-wrapper">
+
+                        <div class="play-button">▶</div>
+
+                        <span class="video-label">[ 🎬 Ecosystem Rules Demo ]</span>
+
+                    </div>
+
+                    <div class="demo-text">
+
+                        <div class="demo-title">Complex Ecosystem Rules</div>
+
+                        <div class="demo-desc">Demonstrating altitude masking and slope rules to keep snow on peaks and trees in the valley.</div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+    </main>
+
+
+
+    <!-- JavaScript for Page Routing -->
+
+    <script>
+
+        function seekScatterVideo(seconds) {
+            const player = document.getElementById('scatterOverviewVideo');
+
+            if (!player) return;
+
+            player.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            player.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'seekTo',
+                args: [seconds, true]
+            }), '*');
+
+            player.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'playVideo',
+                args: []
+            }), '*');
+        }
+
+        function seekIvyVideo(seconds) {
+            const player = document.getElementById('ivyOverviewVideo');
+
+            if (!player) return;
+
+            player.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            player.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'seekTo',
+                args: [seconds, true]
+            }), '*');
+
+            player.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'playVideo',
+                args: []
+            }), '*');
+        }
+
+        function seekWaterVideo(seconds) {
+            const player = document.getElementById('waterOverviewVideo');
+
+            if (!player) return;
+
+            player.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            player.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'seekTo',
+                args: [seconds, true]
+            }), '*');
+
+            player.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'playVideo',
+                args: []
+            }), '*');
+        }
+
+        function seekPhysicsVideo(seconds) {
+            const player = document.getElementById('physicsOverviewVideo');
+
+            if (!player) return;
+
+            player.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            player.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'seekTo',
+                args: [seconds, true]
+            }), '*');
+
+            player.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'playVideo',
+                args: []
+            }), '*');
+        }
+
+        function navigateTo(pageId) {
+
+            const pages = document.querySelectorAll('.page');
+
+            pages.forEach(page => page.classList.remove('active'));
+
+
+
+            const targetPage = document.getElementById(pageId);
+
+            if (targetPage) {
+
+                targetPage.classList.add('active');
+
+                window.scrollTo(0, 0); 
+
+            }
+
+
+
+            const links = document.querySelectorAll('.nav-link');
+
+            links.forEach(link => link.classList.remove('active'));
+
+            
+
+            const activeLink = Array.from(links).find(link => link.getAttribute('onclick').includes(pageId));
+
+            if (activeLink) {
+
+                activeLink.classList.add('active');
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>
