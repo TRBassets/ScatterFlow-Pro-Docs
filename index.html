@@ -884,10 +884,64 @@
             <div class="breadcrumbs">
                 <a onclick="navigateTo('home')">Dashboard</a> <span>/</span> <span style="color: var(--text-main);">Weather</span>
             </div>
+
             <header class="page-header">
-                <h1>Weather Settings</h1>
-                <p>Documentation coming soon.</p>
+                <h1>ScatterFlow Weather</h1>
+                <p>Use the video chapters below to jump straight to the Weather setting you need.</p>
             </header>
+
+            <div class="overview-video-container scatter-overview">
+                <iframe
+                    id="weatherOverviewVideo"
+                    class="scatter-video-embed"
+                    src="https://www.youtube.com/embed/m3zND6aH2j4?si=0OSDZVIRYehSpCOA&amp;enablejsapi=1&amp;rel=0"
+                    title="ScatterFlow Weather tutorial"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="settings-grid scatter-chapter-grid">
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">▶</div><h3 class="card-title">Getting Started</h3></div>
+                        <span class="timestamp-badge">⏱ 0:00–0:14</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekWeatherVideo(0)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">🌧️</div><h3 class="card-title">Rain</h3></div>
+                        <span class="timestamp-badge">⏱ 0:15–1:09</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekWeatherVideo(15)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">💧</div><h3 class="card-title">Rain Ripples</h3></div>
+                        <span class="timestamp-badge">⏱ 1:10–1:40</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekWeatherVideo(70)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">❄️</div><h3 class="card-title">Snow</h3></div>
+                        <span class="timestamp-badge">⏱ 1:41–2:30</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekWeatherVideo(101)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+
+                <article class="setting-card chapter-card">
+                    <div class="card-header">
+                        <div class="card-header-left"><div class="card-icon">🏔️</div><h3 class="card-title">Ground Snow</h3></div>
+                        <span class="timestamp-badge">⏱ 2:31–3:37</span>
+                    </div>
+                    <button class="section-jump" type="button" onclick="seekWeatherVideo(151)">Go to section <span aria-hidden="true">→</span></button>
+                </article>
+            </div>
         </div>
 
         <!-- ==========================================
@@ -1243,6 +1297,26 @@
 
         function seekIvyVideo(seconds) {
             const player = document.getElementById('ivyOverviewVideo');
+
+            if (!player) return;
+
+            player.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            player.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'seekTo',
+                args: [seconds, true]
+            }), '*');
+
+            player.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'playVideo',
+                args: []
+            }), '*');
+        }
+
+        function seekWeatherVideo(seconds) {
+            const player = document.getElementById('weatherOverviewVideo');
 
             if (!player) return;
 
